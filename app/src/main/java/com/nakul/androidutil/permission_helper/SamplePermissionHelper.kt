@@ -5,8 +5,8 @@ import android.util.Log
 
 
 object SamplePermissionHelper {
-    fun permissionCamera(activity: Activity) {
-        PermissionsUtil.checkPermission(activity, PermissionTypes.CAMERA, onPermissionGiven = {
+    fun permissionNotification(activity: Activity) {
+        PermissionsUtil.checkPermission(activity, PermissionTypes.NOTIFICATION, onPermissionGiven = {
             Log.e(javaClass.name, "Permission Granted")
         },
             onPermissionRejected = {

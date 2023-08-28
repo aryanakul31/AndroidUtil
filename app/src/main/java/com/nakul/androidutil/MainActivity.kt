@@ -11,6 +11,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        SamplePermissionHelper.permissionCamera(this)
+        SamplePermissionHelper.permissionNotification(this)
     }
 }

@@ -60,15 +60,19 @@ object PermissionsUtil {
             list,
             onPermissionGiven = onPermissionGiven,
             onPermissionRejected = {
-                permissionAlert(activity, permissionType) { canRequest ->
-                    if (canRequest)
-                        checkPermission(
-                            activity,
-                            permissionType,
-                            onPermissionGiven,
-                            onPermissionRejected
-                        )
-                    else onPermissionRejected?.invoke()
+                if (permissionType.alertMessage.isNullOrBlank()) {
+                    onPermissionRejected?.invoke()
+                } else {
+                    permissionAlert(activity, permissionType) { canRequest ->
+                        if (canRequest)
+                            checkPermission(
+                                activity,
+                                permissionType,
+                                onPermissionGiven,
+                                onPermissionRejected
+                            )
+                        else onPermissionRejected?.invoke()
+                    }
                 }
             },
             onPermissionDisabled = {
