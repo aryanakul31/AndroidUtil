@@ -32,6 +32,7 @@ class LocationService : Service() {
     private var mLocationCallback: LocationCallback? = null
 
     private val runOnce = false
+    private val interval = 5_000L
 
     companion object {
         var lastLocation = MutableLiveData<Location?>()
@@ -50,7 +51,7 @@ class LocationService : Service() {
     }
 
     private fun startLocationTracking() {
-        startForeground(LOCATION_NOTIFICATION_CHANNEL_ID, getNotification())
+//        startForeground(LOCATION_NOTIFICATION_CHANNEL_ID, getNotification())
         startListeningUserLocation()
     }
 
@@ -60,27 +61,27 @@ class LocationService : Service() {
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            return
+            stopSelf()
+        } else {
+            val mLocationRequest =
+                LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, interval).build()
+            mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+            mFusedLocationClient?.lastLocation?.addOnSuccessListener { location ->
+                shareLocation(location ?: return@addOnSuccessListener)
+            }
+
+            mFusedLocationClient?.requestLocationUpdates(mLocationRequest,
+                object : LocationCallback() {
+                    override fun onLocationResult(locationResult: LocationResult) {
+                        shareLocation(locationResult.lastLocation ?: return)
+                    }
+                }.also {
+                    mLocationCallback = it
+                },
+                Looper.getMainLooper()
+            )
         }
-
-        val mLocationRequest =
-            LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 5000).build()
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
-        mFusedLocationClient?.lastLocation?.addOnSuccessListener { location ->
-            shareLocation(location ?: return@addOnSuccessListener)
-        }
-
-        mFusedLocationClient?.requestLocationUpdates(mLocationRequest,
-            object : LocationCallback() {
-                override fun onLocationResult(locationResult: LocationResult) {
-                    shareLocation(locationResult.lastLocation ?: return)
-                }
-            }.also {
-                mLocationCallback = it
-            },
-            Looper.getMainLooper()
-        )
     }
 
     private fun shareLocation(location: Location) {

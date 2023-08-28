@@ -1,7 +1,6 @@
 package com.nakul.androidutil.location_helper
 
 import android.app.Activity
-import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
 import android.location.Location
@@ -17,6 +16,10 @@ import com.google.android.gms.location.LocationSettingsStatusCodes
 import com.google.android.gms.location.Priority
 
 abstract class BaseLocationFragment : Fragment() {
+
+    abstract fun isPermissionGranted(): Boolean
+    abstract fun locationUpdated(location: Location)
+
     private val gpsEnablerResponse =
         registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) startLocationFetching()
@@ -51,28 +54,20 @@ abstract class BaseLocationFragment : Fragment() {
         }
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (isPermissionGranted())
+            requestGps()
+    }
+
     private fun startLocationFetching() {
         LocationService.lastLocation.observe(viewLifecycleOwner) {
             locationUpdated(it ?: return@observe)
         }
-        if (canStartService(LocationService::class.java)) {
-            requireActivity().startService(
-                Intent(requireContext(), LocationService::class.java)
-            )
-        }
-    }
 
-    abstract fun locationUpdated(location: Location)
-
-    private fun canStartService(serviceClass: Class<*>): Boolean {
-        val manager =
-            requireActivity().getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager?
-        for (service in manager!!.getRunningServices(Int.MAX_VALUE)) {
-            if (serviceClass.name == service.service.className) {
-                return false
-            }
-        }
-        return true
+        requireActivity().startService(
+            Intent(requireContext(), LocationService::class.java)
+        )
     }
 
     override fun onDestroyView() {
