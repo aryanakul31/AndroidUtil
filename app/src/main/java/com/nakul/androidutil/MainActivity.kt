@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
         SamplePermissionHelper.permissionNotification(this)
 
         //Location Helper
-        setFragment(SampleLocationHelper())
+//        setFragment(SampleLocationHelper())
     }
 
     private fun setFragment(fragment: Fragment) {
