@@ -1,6 +1,6 @@
 # AndroidUtil
 
-### [Permission Helper](app/src/main/java/com/nakul/androidutil/permission_helper)
+### 1. [Permission Helper](app/src/main/java/com/nakul/androidutil/permission_helper)
 
 #### Step 1. Add dependency
 
@@ -24,7 +24,7 @@
         return list
     }
 
-### [Location Helper](app/src/main/java/com/nakul/androidutil/location_helper)
+### 2. [Location Helper](app/src/main/java/com/nakul/androidutil/location_helper)
 
 
 #### Step 1. Add dependency
