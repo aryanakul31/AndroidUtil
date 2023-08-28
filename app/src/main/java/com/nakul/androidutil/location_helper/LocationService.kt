@@ -51,7 +51,7 @@ class LocationService : Service() {
     }
 
     private fun startLocationTracking() {
-//        startForeground(LOCATION_NOTIFICATION_CHANNEL_ID, getNotification())
+        startForeground(LOCATION_NOTIFICATION_CHANNEL_ID, getNotification())
         startListeningUserLocation()
     }
 
