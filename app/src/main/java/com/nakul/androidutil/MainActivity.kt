@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         //Permission Helper
-        SamplePermissionHelper.permissionCamera(this)
+        SamplePermissionHelper.permissionNotification(this)
 
         //Location Helper
         setFragment(SampleLocationHelper())
