@@ -31,13 +31,13 @@
     //Google Location
     implementation("com.google.android.gms:play-services-location:21.0.1")
 
-#### Step 2. Download and save [LocationService.kt](app%2Fsrc%2Fmain%2Fjava%2Fcom%2Fnakul%2Fandroidutil%2Flocation_helper%2FLocationService.kt
+#### Step 2. Download and save [LocationService.kt](app/src/main/java/com/nakul/androidutil/location_helper/LocationService.kt)
 *    runOnce
 *        true => if location is required only once,
 *        false => if location is required repeatedly.
 *    interval (Default => 5 secs)
 
-#### Step 3. Download and inherit [BaseLocationFragment.kt](BaseLocationFragment.kt) in fragment where location is required.
+#### Step 3. Download and inherit [BaseLocationFragment.kt](app/src/main/java/com/nakul/androidutil/location_helper/BaseLocationFragment.kt) in fragment where location is required.
 
 #### Step 4. Override abstract functions
     isPermissionGranted() // Check and request permissions
