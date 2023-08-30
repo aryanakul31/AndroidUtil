@@ -30,10 +30,10 @@
 
 
 #### Scenarios Handled:
-*** Permission Rejected
-*** Permission Permanently Rejected
-*** Rationale is required
-*** Permission requested but not given in Manifest
+* Permission Rejected
+* Permission Permanently Rejected
+* Rationale is required
+* Permission requested but not given in Manifest
 
 
 ### Thank you
