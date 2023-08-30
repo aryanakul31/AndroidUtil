@@ -50,7 +50,4 @@ dependencies {
 
     //Google Location
     implementation("com.google.android.gms:play-services-location:21.0.1")
-
-    //Dexter
-    implementation ("com.karumi:dexter:6.2.3")
 }

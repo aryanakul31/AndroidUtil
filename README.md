@@ -2,27 +2,44 @@
 
 ### 1. [Permission Helper](app/src/main/java/com/nakul/androidutil/permission_helper)
 
-#### Step 1. Add dependency
+### Step 1. Extend the fragment you want to request permission in, with abstract class [PermissionFragment.kt](app/src/main/java/com/nakul/androidutil/permission_helper/PermissionFragment.kt) and pass fragment layout in constructor.
 
-    //Dexter
-    implementation ("com.karumi:dexter:6.2.3")
-
-#### Step 2. Download [PermissionsUtil.kt](app/src/main/java/com/nakul/androidutil/permission_helper/PermissionsUtil.kt) and [PermissionTypes.kt](app/src/main/java/com/nakul/androidutil/permission_helper/PermissionTypes.kt)
-
-#### Step 3. Give a title, Add Required Permissions and their respective rational text message to show
-
-    enum class PermissionTypes(val permissions: ArrayList<String>, val alertMessage: String?) {
-        NOTIFICATION(getNotificationPermission(), "Notification permission is required."),
-    }
+    class SamplePermissionFragment : PermissionFragment(R.layout.fragment_sample_permission)
+    {
+        ...
+        override fun getPermissionData(): PermissionData {
+            val permissions = ArrayList<String>()   
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                permissions.add(android.Manifest.permission.POST_NOTIFICATIONS)
+            }
+            return PermissionData(
+                permissions = permissions,          // List of permissions required
+                alertMessage = "Permission is required", // Rationale Text message 
+                disabledMessage = "Permission is disabled" // Text message in case of permission disabled                   
+            )
+        }
     
-    
-    private fun getNotificationPermission(): ArrayList<String> {
-        val list = ArrayList<String>()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            permission.POST_NOTIFICATIONS
-        }   
-        return list
-    }
+        override fun onPermissionGranted() {
+            Log.e(this.javaClass.name, "onPermissionGranted")
+        }
+
+    }            
+
+###  Step 2. Enjoy
+
+
+#### Scenarios Handled:
+* Permission Rejected
+* Permission Permanently Rejected
+* Rationale is required
+* Permission requested but not given in Manifest
+
+
+### Thank you
+
+
+
+
 
 ### 2. [Location Helper](app/src/main/java/com/nakul/androidutil/location_helper)
 
