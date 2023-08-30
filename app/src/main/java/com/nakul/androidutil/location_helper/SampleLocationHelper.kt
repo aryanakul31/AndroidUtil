@@ -1,42 +1,34 @@
 package com.nakul.androidutil.location_helper
 
-import android.Manifest
-import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
-import androidx.core.app.ActivityCompat
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.Fragment
 import com.nakul.androidutil.R
 
-class SampleLocationHelper : BaseLocationFragment() {
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.sample_location_helper, container, false)
+class SampleLocationHelper : Fragment(R.layout.sample_location_helper), ILocationHelper {
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        startLocationService()
     }
 
-    override fun isPermissionGranted(): Boolean {
-        return if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            true
-        } else {
-            //TODO("Request Permission")
-            return false
-        }
+    private val gpsEnabler =
+        registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { _ -> }
+
+    override fun getGPSRequester(): ActivityResultLauncher<IntentSenderRequest> = gpsEnabler
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        stopLocationService()
     }
 
-    override fun locationUpdated(location: Location) {
-        Log.e("Location", "Location => ${location.latitude} ${location.longitude}")
-        view?.findViewById<TextView>(R.id.tvLocation)?.text =
-            "Location => ${location.latitude} ${location.longitude}"
+    /** Get Location Updates*/
+    override fun onLocationUpdated(location: Location) {
+        Log.e(this.javaClass.name, "Location => ${location.latitude} ${location.longitude}")
     }
 }
