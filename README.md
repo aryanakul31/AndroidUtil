@@ -44,8 +44,7 @@
     //Google Location
     implementation("com.google.android.gms:play-services-location:21.0.1")
 
-### Step 2. Download [LocationService.kt]
-
+### Step 2. Download [LocationService.kt](app/src/main/java/com/nakul/androidutil/location_helper/LocationService.kt)
 
 ### Step 3. Implement interface [ILocationHelper.kt](app/src/main/java/com/nakul/androidutil/location_helper/ILocationHelper.kt) in fragment/activity where location is required.
 
