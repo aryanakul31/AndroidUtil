@@ -4,8 +4,10 @@
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"
@@ -17,7 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AndroidUtil"
         tools:targetApi="31">
-        <service android:name=".location_helper.LocationService"/>
+        <service android:name=".location_helper.LocationService" />
         <activity
             android:name=".MainActivity"
             android:exported="true">

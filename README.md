@@ -1,6 +1,6 @@
 # AndroidUtil
 
-### 1. [Permission Helper](app/src/main/java/com/nakul/androidutil/permission_helper)
+## 1. [Permission Helper](app/src/main/java/com/nakul/androidutil/permission_helper)
 
 ### Step 1. Extend the fragment you want to request permission in, with abstract class [PermissionFragment.kt](app/src/main/java/com/nakul/androidutil/permission_helper/PermissionFragment.kt) and pass fragment layout in constructor.
 
@@ -35,41 +35,42 @@
 * Permission requested but not given in Manifest
 
 
-### Thank you
 
 
+## 2. [Location Helper](app/src/main/java/com/nakul/androidutil/location_helper)
 
 
-
-### 2. [Location Helper](app/src/main/java/com/nakul/androidutil/location_helper)
-
-
-#### Step 1. Add dependency
+### Step 1. Add dependency
     //Google Location
     implementation("com.google.android.gms:play-services-location:21.0.1")
 
-#### Step 2. Download and save [LocationService.kt](app/src/main/java/com/nakul/androidutil/location_helper/LocationService.kt)
-*    runOnce
-*        true => if location is required only once,
-*        false => if location is required repeatedly.
-*    interval (Default => 5 secs)
+### Step 2. Download [LocationService.kt]
 
-#### Step 3. Download and inherit [BaseLocationFragment.kt](app/src/main/java/com/nakul/androidutil/location_helper/BaseLocationFragment.kt) in fragment where location is required.
 
-#### Step 4. Override abstract functions
-    isPermissionGranted() // Check and request permissions
-    locationUpdated()     // Receive location updates in here
+### Step 3. Implement interface [ILocationHelper.kt](app/src/main/java/com/nakul/androidutil/location_helper/ILocationHelper.kt) in fragment/activity where location is required.
 
-#### Step 5. Add below lines in AndroidManifest
-    <manifest 
-        ...>
-        <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-        <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-        <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
-        
-        <application 
-                ...>
-            <service android:name=".location_helper.LocationService"/>
+### Step 4. Create a registerForActivityResult to request turning on GPS
+        private val gpsEnabler =
+            registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { _ -> }
 
-        </application>
-    </manifest>
+### Step 4. Override abstract functions
+
+        override fun getGPSRequester(): ActivityResultLauncher<IntentSenderRequest> = gpsEnabler // Return GPS requester 
+        locationUpdated(location:Location)     // Receive location updates in here
+
+### Step 5. Add below lines of code in AndroidManifest
+
+        <manifest 
+            ...>
+                <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> 
+                <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+                <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /> //OPTIONAL => Use when location is required in background
+                <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+                <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+            
+            <application 
+                    ...>
+                <service android:name=".location_helper.LocationService"/>
+    
+            </application>
+        </manifest>
