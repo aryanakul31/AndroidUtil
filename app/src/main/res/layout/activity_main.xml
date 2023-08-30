@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/fragmentView"
-        android:name="com.nakul.androidutil.permission_helper.SamplePermissionFragment"
+        android:name="com.nakul.androidutil.SampleFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"

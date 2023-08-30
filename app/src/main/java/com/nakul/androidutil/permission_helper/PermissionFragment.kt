@@ -1,5 +1,6 @@
 package com.nakul.androidutil.permission_helper
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageInfo
@@ -14,8 +15,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.LayoutRes
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import com.google.android.material.snackbar.BaseTransientBottomBar
-import com.google.android.material.snackbar.Snackbar
 
 abstract class PermissionFragment(
     @LayoutRes layout: Int
@@ -33,65 +32,56 @@ abstract class PermissionFragment(
                 if (permissions[permission] == true) {
                     continue
                 } else {
-                    disabledSnackBar.show()
+                    disabledHandling()
                     return@registerForActivityResult
                 }
             }
             onPermissionGranted()
         }
 
-    private val disabledSnackBar by lazy {
+    private fun disabledHandling() {
         Log.e(javaClass.simpleName, "Permission disabled")
-        Snackbar.make(
-            requireView(),
-            getPermissionData().disabledMessage,
-            Snackbar.LENGTH_SHORT
-        ).addCallback(object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
-            override fun onShown(transientBottomBar: Snackbar?) {
-                super.onShown(transientBottomBar)
-            }
-
-            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                super.onDismissed(transientBottomBar, event)
-                if (event != DISMISS_EVENT_ACTION)
-                    onPermissionRejected()
-            }
-        })
-            .setAction(android.R.string.ok) {
-                val intent = Intent()
-                intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-                val uri = Uri.fromParts(
-                    "package",
-                    requireContext().packageName,
-                    null
-                )
-                intent.data = uri
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                startActivity(intent)
-            }
+        val alertDialog = AlertDialog.Builder(requireContext())
+        alertDialog.setCancelable(false)
+        alertDialog.setTitle(getPermissionData().disabledMessage)
+        alertDialog.setCancelable(false)
+        alertDialog.setPositiveButton(android.R.string.ok) { dialogInterface, _ ->
+            dialogInterface.dismiss()
+            val intent = Intent()
+            intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+            val uri = Uri.fromParts(
+                "package",
+                requireContext().packageName,
+                null
+            )
+            intent.data = uri
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            startActivity(intent)
+        }
+        alertDialog.setNegativeButton(android.R.string.cancel) { dialogInterface, _ ->
+            dialogInterface.cancel()
+            onPermissionRejected()
+        }
+        alertDialog.create()
+        alertDialog.show()
     }
 
-    private val rationaleSnackBar by lazy {
+    private fun showRationaleHandling() {
         Log.e(javaClass.simpleName, "shouldShowRequestPermissionRationale")
-
-        Snackbar.make(
-            requireView(),
-            getPermissionData().alertMessage,
-            Snackbar.LENGTH_SHORT
-        ).addCallback(object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
-            override fun onShown(transientBottomBar: Snackbar?) {
-                super.onShown(transientBottomBar)
-            }
-
-            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                super.onDismissed(transientBottomBar, event)
-                if (event != DISMISS_EVENT_ACTION)
-                    onPermissionRejected()
-            }
-        })
-            .setAction(android.R.string.ok) {
-                permissionRequester.launch(getFinalisedPermissions()?.toTypedArray())
-            }
+        val alertDialog = AlertDialog.Builder(requireContext())
+        alertDialog.setCancelable(false)
+        alertDialog.setTitle(getPermissionData().alertMessage)
+        alertDialog.setCancelable(false)
+        alertDialog.setPositiveButton(android.R.string.ok) { dialogInterface, _ ->
+            dialogInterface.dismiss()
+            permissionRequester.launch(getFinalisedPermissions()?.toTypedArray())
+        }
+        alertDialog.setNegativeButton(android.R.string.cancel) { dialogInterface, _ ->
+            dialogInterface.cancel()
+            onPermissionRejected()
+        }
+        alertDialog.create()
+        alertDialog.show()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -104,7 +94,7 @@ abstract class PermissionFragment(
         when {
             list == null -> onPermissionRejected()
             list.isEmpty() -> onPermissionGranted()
-            list.any { shouldShowRequestPermissionRationale(it) } -> rationaleSnackBar.show()
+            list.any { shouldShowRequestPermissionRationale(it) } -> showRationaleHandling()
             else -> permissionRequester.launch(list.toTypedArray())
         }
     }
